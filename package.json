@@ -1,0 +1,21 @@
+{
+  "name": "kachi",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gnlow/Kachi.git"
+  },
+  "keywords": [],
+  "author": "Gnlow",
+  "license": "Mit",
+  "bugs": {
+    "url": "https://github.com/gnlow/Kachi/issues"
+  },
+  "homepage": "https://github.com/gnlow/Kachi#readme",
+  "dependencies": {
+    "dalkak": "^0.5.2"
+  }
+}
