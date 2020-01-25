@@ -2,8 +2,13 @@
   "name": "kachi",
   "version": "0.0.0",
   "description": "",
-  "main": "index.js",
-  "scripts": {},
+  "source": "index.ts",
+  "main": "dist/kachi.js",
+  "module": "dist/kachi.mjs",
+  "unpkg": "dist/kachi.umd.js",
+  "scripts": {
+    "build": "microbundle --name @dalkak/kachi"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Dalkak/Kachi.git"
@@ -17,5 +22,8 @@
   "homepage": "https://github.com/Dalkak/Kachi#readme",
   "dependencies": {
     "dalkak": "^0.6.8"
+  },
+  "devDependencies": {
+    "microbundle": "^0.12.0-next.8"
   }
 }
