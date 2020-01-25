@@ -6,15 +6,15 @@
   "scripts": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gnlow/Kachi.git"
+    "url": "git+https://github.com/Dalkak/Kachi.git"
   },
   "keywords": [],
   "author": "Gnlow",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/gnlow/Kachi/issues"
+    "url": "https://github.com/Dalkak/Kachi/issues"
   },
-  "homepage": "https://github.com/gnlow/Kachi#readme",
+  "homepage": "https://github.com/Dalkak/Kachi#readme",
   "dependencies": {
     "dalkak": "^0.5.2"
   }
