@@ -22,7 +22,7 @@ export default new Pack(
             "서버(server)에(data)보내기",
             (param, info) => {
                 var Entry = (info as {data}).data.Entry;
-                Entry.variableContainer.getVariableByName(param.server).value.send(param.data);
+                Entry.variableContainer.getVariableByName(param.server).getValue().send(param.data);
             }
         ),
         ready: new Block(
@@ -38,7 +38,7 @@ export default new Pack(
                     Entry.variableContainer.appendVariables([{name: param.val}]);
                 }
                 var entMsg = Entry.variableContainer.messages_.find(x=>x.name == param.msg);
-                Entry.variableContainer.getVariableByName(param.server).value.onmessage(event => {
+                Entry.variableContainer.getVariableByName(param.server).getValue().onmessage(event => {
                     Entry.variableContainer.getVariableByName(param.val).setValue(event.data);
                     Entry.engine.raiseMessage(entMsg.id);
                 });
