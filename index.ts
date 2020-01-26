@@ -1,17 +1,24 @@
-import { Block, Pack, Dict } from "dalkak";
+import {
+    Block,
+    Pack,
+    Dict
+} from "dalkak";
 
 export default new Pack(
     new Dict,
-    "kachi",
-    {
+    "kachi", {
         link: new Block(
             new Dict,
             "link",
             "변수(val)을(url)에 연결해 서버 만들기",
             (param, info) => {
-                var Entry = (info as {data}).data.Entry;
-                if(!Entry.variableContainer.getVariableByName(param.val)){
-                    Entry.variableContainer.appendVariables([{name: param.val}]);
+                var Entry = (info as {
+                    data
+                }).data.Entry;
+                if (!Entry.variableContainer.getVariableByName(param.val)) {
+                    Entry.variableContainer.appendVariables([{
+                        name: param.val
+                    }]);
                 }
                 Entry.variableContainer.getVariableByName(param.val).setValue(new WebSocket(param.url));
             }
@@ -21,8 +28,17 @@ export default new Pack(
             "send",
             "서버(server)에(data)보내기",
             (param, info) => {
-                var Entry = (info as {data}).data.Entry;
-                Entry.variableContainer.getVariableByName(param.server).getValue().send(param.data);
+                var Entry = (info as {
+                    data
+                }).data.Entry;
+                var ws = Entry.variableContainer.getVariableByName(param.server).getValue();
+                if (ws.readyState == 0) {
+                    ws.onopen = () => {
+                        ws.send(param.data);
+                    }
+                } else {
+                    ws.send(param.data);
+                }
             }
         ),
         ready: new Block(
@@ -30,18 +46,24 @@ export default new Pack(
             "ready",
             "서버(server)과 신호(msg), 변수(val) 연결하기",
             (param, info) => {
-                var Entry = (info as {data}).data.Entry;
-                if(!Entry.variableContainer.messages_.find(x=>x.name == param.msg)){
-                    Entry.variableContainer.appendMessages([{name: param.msg}]);
+                var Entry = (info as {
+                    data
+                }).data.Entry;
+                if (!Entry.variableContainer.messages_.find(x => x.name == param.msg)) {
+                    Entry.variableContainer.appendMessages([{
+                        name: param.msg
+                    }]);
                 }
-                if(!Entry.variableContainer.getVariableByName(param.val)){
-                    Entry.variableContainer.appendVariables([{name: param.val}]);
+                if (!Entry.variableContainer.getVariableByName(param.val)) {
+                    Entry.variableContainer.appendVariables([{
+                        name: param.val
+                    }]);
                 }
-                var entMsg = Entry.variableContainer.messages_.find(x=>x.name == param.msg);
-                Entry.variableContainer.getVariableByName(param.server).getValue().onmessage(event => {
+                var entMsg = Entry.variableContainer.messages_.find(x => x.name == param.msg);
+                Entry.variableContainer.getVariableByName(param.server).getValue().onmessage = event => {
                     Entry.variableContainer.getVariableByName(param.val).setValue(event.data);
                     Entry.engine.raiseMessage(entMsg.id);
-                });
+                };
             }
         )
     }
