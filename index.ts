@@ -31,15 +31,13 @@ export default new Pack({
         ready: new Block({
             name: "ready",
             template: "서버(server)와 신호(msg), 변수(val) 연결하기",
-            func: (param, project, info) => {
+            func: (param, project, platform) => {
                 var {
                     server = new WebSocket(""), 
                     msg = "", 
                     val = "",
                 } = {...param};
-                var Entry = (info as {
-                    data
-                }).data.Entry;
+                var Entry = (platform as any).Entry;
                 if (!Entry.variableContainer.messages_.find(x => x.name == msg)) {
                     Entry.variableContainer.appendMessages([{
                         name: msg
