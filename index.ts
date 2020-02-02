@@ -4,34 +4,21 @@ import {
     Dict
 } from "dalkak";
 
-export default new Pack(
-    new Dict,
-    "kachi", {
-        link: new Block(
-            new Dict,
-            "link",
-            "변수(val)을(url)에 연결해 서버 만들기",
-            (param, info) => {
-                var Entry = (info as {
-                    data
-                }).data.Entry;
-                if (!Entry.variableContainer.getVariableByName(param.val)) {
-                    Entry.variableContainer.appendVariables([{
-                        name: param.val
-                    }]);
-                }
-                Entry.variableContainer.getVariableByName(param.val).setValue(new WebSocket(param.url));
+export default new Pack({
+    name: "kachi", 
+    blocks: {
+        link: new Block({
+            name: "link",
+            template: "(서버 (url)와 연결하기)",
+            func: (param) => {
+                return new WebSocket(param.url);
             }
-        ),
-        send: new Block(
-            new Dict,
-            "send",
-            "서버(server)에(data)보내기",
-            (param, info) => {
-                var Entry = (info as {
-                    data
-                }).data.Entry;
-                var ws = Entry.variableContainer.getVariableByName(param.server).getValue();
+        }),
+        send: new Block({
+            name: "send",
+            template: "서버 (server)에 (data) 보내기",
+            func: (param) => {
+                var ws = param.server as WebSocket;
                 if (ws.readyState == 0) {
                     ws.onopen = () => {
                         ws.send(param.data);
@@ -40,31 +27,30 @@ export default new Pack(
                     ws.send(param.data);
                 }
             }
-        ),
-        ready: new Block(
-            new Dict,
-            "ready",
-            "서버(server)과 신호(msg), 변수(val) 연결하기",
-            (param, info) => {
+        }),
+        ready: new Block({
+            name: "ready",
+            template: "서버(server)와 신호(msg), 변수(val) 연결하기",
+            func: (param, project, info) => {
+                var {
+                    server = new WebSocket(""), 
+                    msg = "", 
+                    val = "",
+                } = {...param};
                 var Entry = (info as {
                     data
                 }).data.Entry;
-                if (!Entry.variableContainer.messages_.find(x => x.name == param.msg)) {
+                if (!Entry.variableContainer.messages_.find(x => x.name == msg)) {
                     Entry.variableContainer.appendMessages([{
-                        name: param.msg
+                        name: msg
                     }]);
                 }
-                if (!Entry.variableContainer.getVariableByName(param.val)) {
-                    Entry.variableContainer.appendVariables([{
-                        name: param.val
-                    }]);
-                }
-                var entMsg = Entry.variableContainer.messages_.find(x => x.name == param.msg);
-                Entry.variableContainer.getVariableByName(param.server).getValue().onmessage = event => {
-                    Entry.variableContainer.getVariableByName(param.val).setValue(event.data);
+                var entMsg = Entry.variableContainer.messages_.find(x => x.name == msg);
+                server.onmessage = event => {
+                    project.variables.value[val].value = event.data;
                     Entry.engine.raiseMessage(entMsg.id);
                 };
             }
-        )
+        })
     }
-);
+});
