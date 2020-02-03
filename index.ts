@@ -24,7 +24,7 @@ export default new Pack({
                         ws.send(JSON.stringify(param.data));
                     }
                 } else {
-                    ws.send(param.data);
+                    ws.send(JSON.stringify(param.data));
                 }
             }
         }),
