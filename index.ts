@@ -21,7 +21,7 @@ export default new Pack({
                 var ws = param.server as WebSocket;
                 if (ws.readyState == 0) {
                     ws.onopen = () => {
-                        ws.send(param.data);
+                        ws.send(JSON.stringify(param.data));
                     }
                 } else {
                     ws.send(param.data);
