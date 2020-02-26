@@ -1,17 +1,23 @@
 import {
     Block,
-    Pack,
-    Dict
+    Extension,
 } from "dalkak";
 
-export default new Pack({
+let ws: WebSocket;
+export default new Extension({
     name: "kachi", 
+    on: {
+        stop(){
+            ws.close();
+        }
+    },
     blocks: {
         link: new Block({
             name: "link",
             template: "(서버 (url)와 연결하기)",
             func: (param) => {
-                return new WebSocket(param.url);
+                ws = new WebSocket(param.url);
+                return ws;
             }
         }),
         send: new Block({
