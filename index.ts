@@ -1,7 +1,10 @@
 import {
     Block,
     Extension,
+    Variable,
+    Event,
 } from "dalkak";
+import basic from "@dalkak/basic";
 
 let ws: WebSocket;
 export default new Extension({
@@ -15,44 +18,37 @@ export default new Extension({
         link: new Block({
             name: "link",
             template: "(서버 (url)와 연결하기)",
-            func: (param) => {
-                ws = new WebSocket(param.url);
+            func: ({url}) => {
+                ws = new WebSocket(url);
                 return ws;
             }
         }),
         send: new Block({
             name: "send",
             template: "서버 (server)에 (data) 보내기",
-            func: (param) => {
-                var ws = param.server as WebSocket;
+            func: ({server, data}) => {
+                var ws = server as WebSocket;
                 if (ws.readyState == 0) {
                     ws.onopen = () => {
-                        ws.send(JSON.stringify(param.data));
+                        ws.send(JSON.stringify(data));
                     }
                 } else {
-                    ws.send(JSON.stringify(param.data));
+                    ws.send(JSON.stringify(data));
                 }
             }
         }),
         ready: new Block({
+            pack: basic,
             name: "ready",
-            template: "서버(server)와 신호(msg), 변수(val) 연결하기",
-            func: (param, project, platform) => {
-                var {
-                    server = new WebSocket(""), 
-                    msg = "", 
-                    val = "",
-                } = {...param};
-                var Entry = (platform as any).Entry;
-                if (!Entry.variableContainer.messages_.find(x => x.name == msg)) {
-                    Entry.variableContainer.appendMessages([{
-                        name: msg
-                    }]);
-                }
-                var entMsg = Entry.variableContainer.messages_.find(x => x.name == msg);
+            template: "서버(server)와 신호(msg: Event), 변수(val: Variable) 연결하기",
+            func: ({server, msg, val}: {
+                server: WebSocket,
+                msg: Event,
+                val: Variable,
+            }, project, platform) => {
                 server.onmessage = event => {
-                    project.variables.value[val].value = event.data;
-                    Entry.engine.raiseMessage(entMsg.id);
+                    val.value = event.data;
+                    msg.fire(project, platform);
                 };
             }
         })

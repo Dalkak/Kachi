@@ -20,7 +20,8 @@
   },
   "homepage": "https://github.com/Dalkak/Kachi#readme",
   "dependencies": {
-    "dalkak": "^0.8.9"
+    "@dalkak/basic": "^0.1.1",
+    "dalkak": "^0.8.14"
   },
   "devDependencies": {
     "microbundle": "^0.12.0-next.8"
